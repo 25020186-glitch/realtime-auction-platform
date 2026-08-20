@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: auction-postgres
+    environment:
+      POSTGRES_DB: auction_db
+      POSTGRES_USER: auction_user
+      POSTGRES_PASSWORD: auction_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - auction_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auction_user -d auction_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: auction-api
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/auction_db
+      DB_USERNAME: auction_user
+      DB_PASSWORD: auction_password
+      JWT_SECRET: change-this-production-secret-to-at-least-32-characters
+      APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL:-admin@auction.local}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:-Admin123!}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  auction_postgres_data:

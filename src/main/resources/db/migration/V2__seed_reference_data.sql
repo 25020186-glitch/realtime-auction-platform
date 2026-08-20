@@ -1,0 +1,8 @@
+INSERT INTO roles(name) VALUES ('BUYER'), ('SELLER'), ('ADMIN');
+
+INSERT INTO categories(name, created_at, updated_at) VALUES
+    ('Electronics', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Fashion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Collectibles', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Books', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Home & Living', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
