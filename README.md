@@ -94,6 +94,24 @@ Buyer:  buyer.demo@bidora.local  / Buyer123!
 Admin:  admin@auction.local      / Admin123!
 ```
 
+## Public demo deployment
+
+The repository includes a Render Blueprint (`render.yaml`) that provisions the
+Spring Boot API, React frontend, and PostgreSQL database in Singapore. Open the
+following link, choose **Apply**, and provide a strong value for
+`APP_ADMIN_PASSWORD` when prompted:
+
+https://render.com/deploy?repo=https://github.com/25020186-glitch/realtime-auction-platform
+
+The public services are configured as:
+
+- Frontend: `https://bidora-web-25020186.onrender.com`
+- API: `https://bidora-api-25020186.onrender.com`
+
+Free Render web services can sleep when idle, and the free PostgreSQL database
+is intended for a short-lived portfolio demo. Use a paid database before
+treating the deployment as permanent.
+
 ## Run without Docker
 
 Requirements: Java 21+, Maven 3.9+ and a running PostgreSQL instance.

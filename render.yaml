@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: bidora-api-25020186
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: bidora-postgres-25020186
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: bidora-postgres-25020186
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: bidora-postgres-25020186
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: bidora-postgres-25020186
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: bidora-postgres-25020186
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://bidora-web-25020186.onrender.com
+      - key: APP_ADMIN_EMAIL
+        value: admin@bidora.app
+      - key: APP_ADMIN_PASSWORD
+        sync: false
+      - key: APP_ADMIN_NAME
+        value: Bidora Admin
+
+  - type: web
+    name: bidora-web-25020186
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    healthCheckPath: /
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://bidora-api-25020186.onrender.com
+
+databases:
+  - name: bidora-postgres-25020186
+    plan: free
+    region: singapore
+    databaseName: bidora
+    user: bidora_user
+    postgresMajorVersion: "17"
+    ipAllowList: []

@@ -38,7 +38,7 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
   } catch {
     throw new ApiError(0, {
       code: "BACKEND_OFFLINE",
-      message: "Không thể kết nối backend. Hãy kiểm tra Docker và cổng 8080.",
+      message: "Dịch vụ đấu giá đang khởi động hoặc tạm thời mất kết nối. Vui lòng thử lại sau ít phút.",
     });
   }
 
