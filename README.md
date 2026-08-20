@@ -1,6 +1,6 @@
 # Real-time Online Auction Platform
 
-A portfolio-ready auction backend built with Java 21, Spring Boot 4.1, PostgreSQL, JWT, STOMP/WebSocket and transaction-safe bidding.
+A portfolio-ready full-stack auction platform built with React 19, Java 21, Spring Boot 4.1, PostgreSQL, JWT, STOMP/WebSocket and transaction-safe bidding.
 
 ## Highlights
 
@@ -14,13 +14,15 @@ A portfolio-ready auction backend built with Java 21, Spring Boot 4.1, PostgreSQ
 - Factory Pattern for pluggable WebSocket/email notification senders.
 - Flyway migrations, scheduler-driven auction lifecycle and structured API errors.
 - H2 integration tests, including two genuinely concurrent bidders.
+- Colorful responsive React UI with animated landing, auction room, seller workspace and admin control room.
+- Production frontend container, social-preview artwork and end-to-end WebSocket smoke testing.
 
 ## Architecture
 
 ```text
 Client
-  ├── REST/JSON ──> Controller ──> Service (@Transactional) ──> Repository ──> PostgreSQL
-  └── STOMP/WS  <── SimpMessagingTemplate <── AFTER_COMMIT event listeners
+  ├── React/Vinext UI ── REST/JSON ──> Controller ──> Service (@Transactional) ──> Repository ──> PostgreSQL
+  └── React auction room <── STOMP/WS <── SimpMessagingTemplate <── AFTER_COMMIT event listeners
 ```
 
 The bid path is deliberately serialized only per auction:
@@ -43,6 +45,7 @@ The database lock is the source of truth. WebSocket is only the delivery mechani
 
 | Area | Choice |
 |---|---|
+| Frontend | React 19, TypeScript, Vinext/Vite, Lucide icons |
 | Language | Java 21 |
 | Framework | Spring Boot 4.1 |
 | Persistence | Spring Data JPA / Hibernate 7 |
@@ -50,11 +53,11 @@ The database lock is the source of truth. WebSocket is only the delivery mechani
 | Migration | Flyway |
 | Security | Spring Security, HS256 JWT, BCrypt |
 | Real time | WebSocket + STOMP |
-| Testing | JUnit 5, AssertJ, MockMvc |
+| Testing | JUnit 5, AssertJ, MockMvc, Node test runner, realtime STOMP smoke test |
 
 ## Run with Docker
 
-Docker Compose starts PostgreSQL and the API:
+Docker Compose starts PostgreSQL, the API and the frontend:
 
 ```bash
 docker compose up --build
@@ -73,7 +76,23 @@ Override both values before sharing or deploying:
 APP_ADMIN_EMAIL=your@email.com APP_ADMIN_PASSWORD='a-strong-password' docker compose up --build
 ```
 
+Open the website at `http://localhost:3000`.
+
 The API is available at `http://localhost:8080`; health check: `GET /actuator/health`.
+
+To add a complete local demo auction and two test users:
+
+```powershell
+.\scripts\seed-demo.ps1
+```
+
+Demo accounts:
+
+```text
+Seller: seller.demo@bidora.local / Seller123!
+Buyer:  buyer.demo@bidora.local  / Buyer123!
+Admin:  admin@auction.local      / Admin123!
+```
 
 ## Run without Docker
 
@@ -86,6 +105,22 @@ mvn spring-boot:run
 ```
 
 Flyway creates and validates the schema automatically. To create the first admin outside Docker, set `APP_ADMIN_EMAIL` and `APP_ADMIN_PASSWORD` before the first start.
+
+Run the frontend in another terminal:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend checks:
+
+```powershell
+npm test
+npm run lint
+npm run test:realtime
+```
 
 ## API overview
 
